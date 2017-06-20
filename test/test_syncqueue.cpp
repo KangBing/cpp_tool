@@ -2,7 +2,7 @@
 * @Author: kangyabing
 * @Date:   2017-06-13 16:28:48
 * @Last Modified by:   kangyabing
-* @Last Modified time: 2017-06-16 22:37:43
+* @Last Modified time: 2017-06-20 10:39:38
 */
 
 
@@ -24,7 +24,7 @@ atomic<int> consume_time;
 atomic<int> produce_sum;
 atomic<int> consume_sum;
 
-SyncQueue<int> my_queue(150);
+SyncQueue<int> my_queue(50);
 const int kMaxNum = 1e8;
 
 void Producer(){
