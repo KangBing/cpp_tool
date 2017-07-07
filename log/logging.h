@@ -10,8 +10,19 @@ namespace kang{
 #define LOG_INFO    LogINFO(__FILE__, __LINE__)
 #define LOG_ERROR   LogERROR(__FILE__, __LINE__)
 #define LOG_WARNING LogWARNING(__FILE__, __LINE__)
+#define LOG_FATAL   LogFATAL(__FILE__, __LINE__)
 
 #define LOG(severity) LOG_##severity.stream()
+
+#define CHECK(x)    \
+    if(!(x))        \
+        LOG(FATAL)<<"Check failed: " #x <<". "
+#define CHECK_LT(x, y) CHECK((x) < (y))
+#define CHECK_GT(x, y) CHECK((x) > (y))
+#define CHECK_LE(x, y) CHECK((x) <= (y))
+#define CHECK_GE(x, y) CHECK((x) >= (y))
+#define CHECK_EQ(x, y) CHECK((x) == (y))
+#define CHECK_NE(x, y) CHECK((x) != (y))
 
 /*
  * \brief 初始化日志，例如设置日志目录等操作
@@ -53,11 +64,15 @@ public:
     ~LogBase(){
         /*输出到标准错误*/
         std::cerr<<thread_stream.str()<<"\n";
-
+        if(is_exit_){
+            abort();
+        }
     }
     std::stringstream& stream(){
         return thread_stream;
     }
+protected:
+    bool is_exit_{false};
 };
 
 class LogINFO: public LogBase{
@@ -76,6 +91,12 @@ class LogWARNING: public LogBase{
 public:
     LogWARNING(const char* file, int line): LogBase(file, line, "WARNING"){}
     ~LogWARNING(){}
+};
+
+class LogFATAL: public LogBase{
+public:
+    LogFATAL(const char* file, int line): LogBase(file, line, "FATAL"){}
+    ~LogFATAL(){is_exit_ = true;}
 };
 
 }
